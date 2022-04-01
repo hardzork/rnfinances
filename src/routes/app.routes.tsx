@@ -7,7 +7,13 @@ import { Dashboard } from "../screens/Dashboard";
 import { Register } from "../screens/Register";
 import { RFValue } from "react-native-responsive-fontsize";
 
-const { Navigator, Screen } = createBottomTabNavigator();
+export type AppRoutesParamList = {
+  Listagem: undefined;
+  Cadastrar: undefined;
+  Resumo: undefined;
+};
+
+const { Navigator, Screen } = createBottomTabNavigator<AppRoutesParamList>();
 
 export function AppRoutes() {
   const theme = useTheme();
@@ -19,7 +25,7 @@ export function AppRoutes() {
         tabBarInactiveTintColor: theme.colors.text,
         tabBarLabelPosition: "beside-icon",
         tabBarStyle: {
-          height: RFValue(88),
+          height: RFValue(70),
           paddingVertical: Platform.OS === "ios" ? 20 : 0,
         },
       }}
