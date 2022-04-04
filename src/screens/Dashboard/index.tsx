@@ -33,7 +33,7 @@ export interface IDataList extends ITransactionCard {
 
 interface HighlightProps {
   amount: string;
-  date?: string;
+  date: string;
 }
 
 interface IHighlightData {
@@ -93,30 +93,57 @@ export function Dashboard() {
       );
 
       setTransactions(transactionsFormatted);
+
+      const [lastTransactionRevenue] = transactionsSorted.filter(
+        (transaction) => transaction.type === "up"
+      );
+      const [lastTransactionExpense] = transactionsSorted.filter(
+        (transaction) => transaction.type === "down"
+      );
+
       setHighlightData({
         expenses: {
           amount: expensesSum.toLocaleString("pt-BR", {
             style: "currency",
             currency: "BRL",
           }),
+          date: Intl.DateTimeFormat("pt-BR", {
+            day: "2-digit",
+            month: "long",
+          }).format(new Date(lastTransactionExpense.date)),
         },
         revenue: {
           amount: revenueSum.toLocaleString("pt-BR", {
             style: "currency",
             currency: "BRL",
           }),
+          date: Intl.DateTimeFormat("pt-BR", {
+            day: "2-digit",
+            month: "long",
+          }).format(new Date(lastTransactionRevenue.date)),
         },
         total: {
           amount: (revenueSum - expensesSum).toLocaleString("pt-BR", {
             style: "currency",
             currency: "BRL",
           }),
+          date: `${Intl.DateTimeFormat("pt-BR", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          }).format(
+            new Date(transactionsSorted[transactionsSorted.length - 1].date)
+          )} - ${Intl.DateTimeFormat("pt-BR", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          }).format(new Date(transactionsSorted[0].date))}`,
         },
       });
 
       setIsLoading(false);
     } catch (error) {
-      console.warn(error);
+      console.log(error);
     }
   }
 
@@ -158,19 +185,19 @@ export function Dashboard() {
               type="up"
               title="Entradas"
               amount={highlightData?.revenue?.amount}
-              lastTransaction="Última entrada dia 13 de abril"
+              lastTransaction={`Última entrada dia ${highlightData?.revenue?.date}`}
             />
             <HighlightCard
               type="down"
               title="Saídas"
               amount={highlightData?.expenses?.amount}
-              lastTransaction="Última saída dia 03 de abril"
+              lastTransaction={`Última saída dia ${highlightData?.expenses?.date}`}
             />
             <HighlightCard
               type="total"
               title="Total"
               amount={highlightData?.total?.amount}
-              lastTransaction="01 à 16 de abril"
+              lastTransaction={highlightData?.total?.date}
             />
           </HighlightCards>
 

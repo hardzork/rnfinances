@@ -4837,6 +4837,11 @@ react-native-screens@~3.10.1:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
 
+react-native-text-ticker@^1.14.0:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/react-native-text-ticker/-/react-native-text-ticker-1.14.0.tgz#dc537d2c587efc18ef19db9a85dc678a28aa8c57"
+  integrity sha512-8TNGTcW43dfnCqIuXVA7F1Ny8SKGrw0pIrNS5nM7eda+6AsuPTZh3JQ2CwmSRYfsrlnS4QFrpyo5ykpI8nvtCw==
+
 react-native-uuid@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/react-native-uuid/-/react-native-uuid-2.0.1.tgz#ed4e2dfb1683eddb66967eb5dca140dfe1abddb9"
