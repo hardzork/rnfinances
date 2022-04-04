@@ -24,8 +24,6 @@ import { CategorySelect } from "../CategorySelect";
 
 import type { AppRoutesParamList } from "../../routes/app.routes";
 
-const dataKey = "@gofinances:transactions";
-
 interface IFormData {
   name: string;
   amount: number;
@@ -87,12 +85,13 @@ export function Register() {
       id: String(uuid.v4()),
       name: form.name,
       amount: form.amount,
-      transactionType,
+      type: transactionType,
       category: category.key,
       date: new Date(),
     };
 
     try {
+      const dataKey = "@gofinances:transactions";
       const data = await AsyncStorage.getItem(dataKey);
       const currentData = data ? JSON.parse(data) : [];
       const dataFormatted = [...currentData, newTransaction];
