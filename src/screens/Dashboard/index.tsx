@@ -35,8 +35,12 @@ export function Dashboard() {
   async function loadTransactions() {
     try {
       const response = await AsyncStorage.getItem(dataKey);
-      const transactions = response ? JSON.parse(response) : [];
-      const transactionsFormatted: IDataList[] = transactions.map(
+      const transactions: IDataList[] = response ? JSON.parse(response) : [];
+      const transactionsSorted = transactions.sort(
+        (a: IDataList, b: IDataList) =>
+          new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+      const transactionsFormatted: IDataList[] = transactionsSorted.map(
         (transaction: IDataList) => {
           const amount = Number(transaction.amount).toLocaleString("pt-BR", {
             style: "currency",
