@@ -94,56 +94,79 @@ export function Dashboard() {
 
       setTransactions(transactionsFormatted);
 
-      const [lastTransactionRevenue] = transactionsSorted.filter(
-        (transaction) => transaction.type === "up"
-      );
-      const [lastTransactionExpense] = transactionsSorted.filter(
-        (transaction) => transaction.type === "down"
-      );
+      if (transactionsFormatted.length > 0) {
+        const [lastTransactionRevenue] = transactionsSorted.filter(
+          (transaction) => transaction.type === "up"
+        );
+        const [lastTransactionExpense] = transactionsSorted.filter(
+          (transaction) => transaction.type === "down"
+        );
 
-      setHighlightData({
-        expenses: {
-          amount: expensesSum.toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-          }),
-          date: Intl.DateTimeFormat("pt-BR", {
-            day: "2-digit",
-            month: "long",
-          }).format(new Date(lastTransactionExpense.date)),
-        },
-        revenue: {
-          amount: revenueSum.toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-          }),
-          date: Intl.DateTimeFormat("pt-BR", {
-            day: "2-digit",
-            month: "long",
-          }).format(new Date(lastTransactionRevenue.date)),
-        },
-        total: {
-          amount: (revenueSum - expensesSum).toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-          }),
-          date: `${Intl.DateTimeFormat("pt-BR", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          }).format(
-            new Date(transactionsSorted[transactionsSorted.length - 1].date)
-          )} - ${Intl.DateTimeFormat("pt-BR", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          }).format(new Date(transactionsSorted[0].date))}`,
-        },
-      });
+        setHighlightData({
+          expenses: {
+            amount: expensesSum.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            }),
+            date:
+              lastTransactionExpense &&
+              Intl.DateTimeFormat("pt-BR", {
+                day: "2-digit",
+                month: "long",
+              }).format(new Date(lastTransactionExpense.date)),
+          },
+          revenue: {
+            amount: revenueSum.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            }),
+            date:
+              lastTransactionRevenue &&
+              Intl.DateTimeFormat("pt-BR", {
+                day: "2-digit",
+                month: "long",
+              }).format(new Date(lastTransactionRevenue.date)),
+          },
+          total: {
+            amount: (revenueSum - expensesSum).toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            }),
+            date:
+              transactionsSorted &&
+              `${Intl.DateTimeFormat("pt-BR", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              }).format(
+                new Date(transactionsSorted[transactionsSorted.length - 1].date)
+              )} - ${Intl.DateTimeFormat("pt-BR", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              }).format(new Date(transactionsSorted[0].date))}`,
+          },
+        });
+      }
 
       setIsLoading(false);
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  async function hanldeRemoveTransaction(id: string) {
+    try {
+      const data = await AsyncStorage.getItem(dataKey);
+      const currentData: IDataList[] = data ? JSON.parse(data) : [];
+      const transactionsUpdated = currentData.filter(
+        (transaction) => transaction.id !== id
+      );
+      await AsyncStorage.setItem(dataKey, JSON.stringify(transactionsUpdated));
+
+      loadTransactions();
+    } catch (error) {
+      console.log("Erro:", error);
     }
   }
 
@@ -185,13 +208,13 @@ export function Dashboard() {
               type="up"
               title="Entradas"
               amount={highlightData?.revenue?.amount}
-              lastTransaction={`Última entrada dia ${highlightData?.revenue?.date}`}
+              lastTransaction={highlightData?.revenue?.date}
             />
             <HighlightCard
               type="down"
               title="Saídas"
               amount={highlightData?.expenses?.amount}
-              lastTransaction={`Última saída dia ${highlightData?.expenses?.date}`}
+              lastTransaction={highlightData?.expenses?.date}
             />
             <HighlightCard
               type="total"
@@ -206,7 +229,12 @@ export function Dashboard() {
             <TransactionList
               data={transactions}
               keyExtractor={(item) => item.id}
-              renderItem={({ item }) => <TransactionCard data={item} />}
+              renderItem={({ item }) => (
+                <TransactionCard
+                  data={item}
+                  onRemove={hanldeRemoveTransaction}
+                />
+              )}
             />
           </Transactions>
         </>

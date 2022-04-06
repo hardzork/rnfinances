@@ -26,8 +26,8 @@ const icon = {
 export function HighlightCard({
   type,
   title,
-  amount,
-  lastTransaction,
+  amount = "R$0,00",
+  lastTransaction = "Não existem transações cadastradas",
 }: IHighlightCards) {
   return (
     <Container type={type}>
@@ -45,7 +45,11 @@ export function HighlightCard({
         >
           <Amount type={type}>{amount}</Amount>
         </TextTicker>
-        <LastTransaction type={type}>{lastTransaction}</LastTransaction>
+        <LastTransaction type={type}>
+          {type === "up" && amount !== "R$0,00" && "Última entrada dia "}
+          {type === "down" && amount !== "R$0,00" && "Última saída dia "}
+          {lastTransaction}
+        </LastTransaction>
       </Footer>
     </Container>
   );

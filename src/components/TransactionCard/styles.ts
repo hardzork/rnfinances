@@ -43,6 +43,11 @@ export const Icon = styled(Feather)`
   color: ${({ theme }) => theme.colors.text};
 `;
 
+export const RemoveIcon = styled(Feather)`
+  font-size: ${RFValue(30)}px;
+  color: ${({ theme }) => theme.colors.shape};
+`;
+
 export const CategoryName = styled.Text`
   font-size: ${RFValue(14)}px;
   color: ${({ theme }) => theme.colors.text};
